@@ -1,0 +1,79 @@
+[user]
+	name = Andreas Hellström
+	email = andreas71@gmail.com
+[core]
+	autocrlf = false
+	editor = 'C:/Program Files (x86)/Notepad++/notepad++.exe' -multiInst -nosession
+	eol = lf	
+[color]
+	# Use colors in Git commands that are capable of colored output when
+	# outputting to the terminal. (This is the default setting in Git ≥ 1.8.4.)
+	ui = auto
+[color "branch"]
+	current = yellow reverse
+	local = yellow
+	remote = green
+[color "diff"]
+	meta = yellow bold
+	frag = magenta bold # line info
+	old = red # deletions
+	new = green # additions
+[color "status"]
+	added = yellow
+	changed = green
+	untracked = cyan	
+[credential]
+	helper = wincred
+
+# -----------------------------------------------------------------------------
+
+[alias]
+
+alias = config --get-regexp ^alias\\.
+info = "!git branch; git status"
+ec = config --global -e
+
+co = checkout
+cob = checkout -b
+master = checkout master
+back = checkout - # Checkout last used branch 
+
+pl = pull --rebase
+
+cm = commit -am
+save = commit -am 'Save work in progress'
+wip = commit -am 'Save work in progress'
+amend = commit --amend
+
+pub = "!git publish"
+publish = "!git push -u origin $(git branch-name)" 
+
+br = branch
+bra = branch --all
+f = fetch
+fa = fetch --all
+s = status
+st = status
+
+l = "!git log1"
+log1 = log --pretty=oneline -n 20 --graph --abbrev-commit
+
+# Reset local branch to remote version of branch. 
+reset-local = "!git reset --hard $(git branch-name)" 
+
+prune-test = prune --dry-run
+
+# Delete local branches that have been merged on remote.
+fix-branches = "!git fetch --all -p; git branch -vv | grep \": gone]\" | awk '{ print $1 }' | xargs -n 1 git branch -D; echo 'LOCAL BRANCHES AFTER DELETE-MERGED:'; git branch"		
+
+fix-branches-test = "!git fetch --all -p; echo 'ALL LOCAL BRANCHES:'; git branch; echo 'MERGED LOCAL BRANCHES:'; git branch -vv | grep \": gone]\" | awk '{ print $1 }' | xargs -n 1 echo ' '; echo 'Merged local branches will be deleted by \"git delete-merged\" command'; "
+
+# Correct an older commit. Source: https://blog.filippo.io/git-fixup-amending-an-older-commit
+fix-commit = "!f() { TARGET=$(git rev-parse "$1"); git commit --fixup=$TARGET ${@:2} && EDITOR=true git rebase -i --autostash --autosquash $TARGET^; }; f"
+
+# Helper command. Get current branch name (used in other aliases)
+branch-name = "!git rev-parse --abbrev-ref HEAD"  
+
+# todo
+unstage = reset --
+regret = reset HEAD~

@@ -1,0 +1,43 @@
+{
+  "extends": [
+    "airbnb-base"
+  ],
+  "env": {
+    "node": true,
+    "browser": true,
+    "es6": true
+  },
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "config/webpack.common.js"
+      }
+    }
+  },
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "rules": {
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {}
+    ],
+    "no-console": "off",
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": true
+      }
+    ]
+  }
+}
