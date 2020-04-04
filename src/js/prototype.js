@@ -1,11 +1,12 @@
 /* JavaScript entry point for Webpack bundler. */
 
-import _ from 'lodash';
+// import _ from 'lodash';
 import 'normalize.css';
 import 'src/styles/index.css';
-import sampleData from 'src/data/sample-data.json';
-import sampleImage from 'src/images/sample-image.png';
+// import sampleData from 'src/data/sample-data.json';
+// import sampleImage from 'src/images/sample-image.png';
 
+/*
 function mountApplication() {
   const header = document.createElement('h1');
   header.innerHTML = _.join(['Prototype application', 'mounted', ' here!'], ' ');
@@ -36,5 +37,6 @@ function mountApplication() {
   // document.body.appendChild(appElement);
   document.getElementById('app').appendChild(appElement);
 }
+*/
 
-mountApplication();
+// mountApplication();
