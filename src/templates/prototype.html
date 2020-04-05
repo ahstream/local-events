@@ -1,31 +1,373 @@
 <!DOCTYPE html>
 <html lang="sv">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prototype page</title>
+    <meta name="description" content="TODO" />
+  </head>
 
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prototype page</title>
-  <meta name="description" content="TODO">
-</head>
+  <body>
+    <script></script>
+    <div id="app">
+      <!-- Application will be mounted here -->
+    </div>
 
-<body>
-  <script>
-    const events = [];
-    console.log(events);
-  </script>
-  <div id="app">
-    <!-- Application will be mounted here -->
+    <script>
+      // Should be same value as transition delay in css!
+      const eventAnimationDelay = 350;
+      const eventCategoryAnimationDelay = 350;
 
+      let events = [];
 
+      let currentSelectedEvent = null;
 
+      /* -------------------------------------------------------------------------------------- */
 
+      const randomElementFromArray = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
+      /* -------------------------------------------------------------------------------------- */
 
+      /* -------------------------------------------------------------------------------------- */
 
+      const randomSubCategory = (key, allSubCategories) => {
+        const subCategories = allSubCategories[key];
+        if (!subCategories) {
+          return '';
+        }
+        // console.log('subCategories', subCategories);
+        return subCategories[Math.floor(Math.random() * subCategories.length)];
+      };
 
-  </div>
-</body>
+      const createSampleData = () => {
+        const createSampleEvent = (data) => {
+          return {
+            id: data.id.toString(),
+            date: data.date,
+            title: `Event ${data.id}`,
+            category: data.category,
+            subCategory1: data.subCategory1,
+            subCategory2: data.subCategory2,
+            subCategory3: data.subCategory3,
+            className: data.category.toLowerCase(),
+            isFilteredOut: false,
+            isHidden: false,
+            isSelected: false,
+            details: data.details,
+          };
+        };
+        const sampleCategories = ['Sport', 'Musik', 'Museum', 'Barn'];
+        const sampleSubCategories1 = { Sport: ['Handboll', 'Fotboll'], Musik: ['Rock', 'Jazz'] };
+        const sampleSubCategories2 = { Handboll: ['Herr', 'Dam'], Fotboll: ['Herr', 'Dam'] };
+        const sampleSubCategories3 = { Herr: ['Division 1', 'Division 2'], Dam: ['Division 1', 'Division 2'] };
 
+        const sampleEventDetails =
+          'x\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nx\nabc';
+        const sampleDates = [
+          '2020-01-01',
+          '2020-01-02',
+          '2020-01-03',
+          '2020-01-04',
+          '2020-01-05',
+          '2020-01-06',
+          '2020-01-07',
+        ];
+
+        const numOfEvents = 50;
+        const tempEvents = [];
+
+        for (let i = 0; i < numOfEvents; i += 1) {
+          const id = i + 1;
+          const date = randomElementFromArray(sampleDates);
+          const category = randomElementFromArray(sampleCategories);
+          const subCategory1 = randomSubCategory(category, sampleSubCategories1);
+          const subCategory2 = randomSubCategory(subCategory1, sampleSubCategories2);
+          const subCategory3 = randomSubCategory(subCategory2, sampleSubCategories3);
+          // console.log('subCategory1', subCategory1);
+          const event = createSampleEvent({
+            id,
+            date,
+            category,
+            subCategory1,
+            subCategory2,
+            subCategory3,
+            details: sampleEventDetails,
+          });
+          tempEvents.push(event);
+        }
+
+        events = tempEvents.sort((a, b) => (a.date > b.date ? 1 : -1));
+        events.forEach((event, index) => {
+          event.id = index + 1;
+          event.title = `Event ${index + 1}`;
+        });
+      };
+
+      /* -------------------------------------------------------------------------------------- */
+
+      const getHeightOfHiddenElement = function (elem) {
+        elem.style.display = 'block'; // Make it visible
+        const height = elem.scrollHeight + 'px'; // Get it's height
+        elem.style.display = ''; //  Hide it again
+        return height;
+      };
+
+      /* -------------------------------------------------------------------------------------- */
+
+      const selectEvent = (event, isSwitchFromPreviousSelection = false) => {
+        console.log('selectEvent', event, isSwitchFromPreviousSelection);
+
+        if (!event) {
+          return;
+        }
+        event.isSelected = true;
+        currentSelectedEvent = event;
+
+        const eventElem = document.getElementById(event.id);
+        eventElem.classList.toggle('is-selected', true);
+        const eventDetailsElem = document.getElementById('event-details-' + event.id);
+        animateEventSelection(eventElem, eventDetailsElem, isSwitchFromPreviousSelection);
+      };
+
+      /* -------------------------------------------------------------------------------------- */
+
+      const animateEventSelection = (eventElem, eventDetailsElem, isSwitchFromPreviousSelection) => {
+        // When switching from one selected event to another, the hiding of the first event has been animated.
+        // A smoother scrollIntoView of the newly selected event does not look good. A faster scroll (auto) looks better.
+        const scrollBehavior = isSwitchFromPreviousSelection ? 'auto' : 'smooth';
+        console.log('scrollIntoView behavior:', scrollBehavior);
+
+        window.setTimeout(function () {
+          eventElem.scrollIntoView({ behavior: scrollBehavior });
+          var height = getHeightOfHiddenElement(eventDetailsElem); // Get the natural height
+          eventDetailsElem.classList.toggle('is-visible', true); // Make the element visible
+          eventDetailsElem.style.height = height; // Update the max-height
+        }, 1);
+
+        // Once the transition is complete, remove the inline max-height so the content can scale responsively
+        window.setTimeout(function () {
+          eventDetailsElem.style.height = '';
+          eventElem.scrollIntoView({ behavior: scrollBehavior });
+        }, eventAnimationDelay);
+      };
+
+      /* -------------------------------------------------------------------------------------- */
+
+      const deselectEvent = (event) => {
+        console.log('deselectEvent', event);
+
+        if (!event) {
+          return;
+        }
+        event.isSelected = false;
+        currentSelectedEvent = null;
+
+        const eventElem = document.getElementById(event.id);
+        const eventDetailsElem = document.getElementById('event-details-' + event.id);
+
+        animateEventDeselection(eventElem, eventDetailsElem);
+      };
+
+      /* -------------------------------------------------------------------------------------- */
+
+      const animateEventDeselection = (eventElem, eventDetailsElem) => {
+        // Give the element a height to change from
+        eventDetailsElem.style.height = eventDetailsElem.scrollHeight + 'px';
+        // Set the height back to 0
+        window.setTimeout(function () {
+          eventDetailsElem.style.height = '0';
+        }, 1);
+        // When the transition is complete, hide it
+        window.setTimeout(function () {
+          eventDetailsElem.classList.toggle('is-visible', false);
+          eventElem.classList.toggle('is-selected', false);
+        }, eventAnimationDelay);
+      };
+
+      /* -------------------------------------------------------------------------------------- */
+
+      const getEvent = (eventId) => {
+        const eventIdNumber = Number(eventId);
+        return events.find((obj) => obj.id === eventIdNumber);
+      };
+
+      /* -------------------------------------------------------------------------------------- */
+
+      const clickEvent = (eventId, domEvent) => {
+        console.log('clickEvent', eventId, domEvent);
+
+        const event = getEvent(eventId);
+        console.log('event', event);
+        if (event.isSelected) {
+          // Deselect an event that was already selected!
+          deselectEvent(event);
+        } else if (currentSelectedEvent) {
+          // Switch selection from one event to another!
+          deselectEvent(currentSelectedEvent);
+          selectEvent(event, true);
+        } else {
+          // Select event when no other event is currently selected!
+          selectEvent(event);
+        }
+        domEvent.stopPropagation();
+      };
+
+      /* -------------------------------------------------------------------------------------- */
+      function isElementInViewport(el) {
+        // Special bonus for those using jQuery
+        if (typeof jQuery === 'function' && el instanceof jQuery) {
+          el = el[0];
+        }
+
+        var rect = el.getBoundingClientRect();
+
+        return (
+          rect.top >= 0 &&
+          rect.left >= 0 &&
+          rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) /* or $(window).height() */ &&
+          rect.right <= (window.innerWidth || document.documentElement.clientWidth) /* or $(window).width() */
+        );
+      }
+
+      const toggleEventCategory = (categories, eventTextId, domEvent) => {
+        console.log('toggleEventCategory', categories, eventTextId, domEvent);
+
+        const eventId = parseInt(eventTextId);
+        const event = getEvent(eventId);
+        console.log('event', event);
+
+        const doFilterOut = event.isFilteredOut ? false : true;
+        console.log('doFilterOut', doFilterOut);
+
+        const qCategory = categories[0];
+        const qSubCategory1 = categories[1];
+        const qSubCategory2 = categories[2];
+        const qSubCategory3 = categories[3];
+        console.log([qCategory, qSubCategory1, qSubCategory2, qSubCategory3]);
+
+        events.forEach((eventItem, index) => {
+          console.log([eventItem.category, eventItem.subCategory1, eventItem.subCategory2, eventItem.subCategory3]);
+          // return statment equal to continue since .forEach uses callbacks internally!
+          if (eventItem.category !== qCategory) {
+            return;
+          }
+          if (qSubCategory1 && eventItem.subCategory1 !== qSubCategory1) {
+            return;
+          }
+          if (qSubCategory2 && eventItem.subCategory2 !== qSubCategory2) {
+            return;
+          }
+          if (qSubCategory3 && eventItem.subCategory3 !== qSubCategory3) {
+            return;
+          }
+
+          const eventElem = document.getElementById(eventItem.id);
+          eventItem.isFilteredOut = doFilterOut;
+          eventElem.classList.toggle('is-filtered-out', doFilterOut);
+
+          const isVisible = isElementInViewport(eventElem);
+          console.log('eventItem.id, isVisible', eventItem.id, isVisible);
+
+          if (eventItem.id <= eventId) {
+            return;
+          }
+
+          if (debug) {
+            console.log('DEBUG: Dölj inte bortfiltrerade event, gråmarkera dom bara!');
+            return;
+          }
+
+          // Only hide events below current event (eventId)!
+          eventItem.isHidden = doFilterOut && eventItem.id > eventId ? true : false;
+          console.log('doFilterOut, eventItem.id, eventId', doFilterOut, eventItem.id, eventId);
+          console.log('eventItem.id > eventId', eventItem.id > eventId);
+          console.log('typeof eventItem.id, typeof eventId', typeof eventItem.id, typeof eventId);
+          console.log('event id: ' + eventItem.id + ', isHidden: ', eventItem.isHidden);
+
+          if (eventItem.isHidden) {
+            if (!isVisible) {
+              eventElem.classList.toggle('is-hidden', eventItem.isHidden);
+              return;
+            }
+
+            // Give the element a height to change from
+            eventElem.style.height = eventElem.scrollHeight + 'px';
+
+            // Set the height back to 0
+            window.setTimeout(function () {
+              eventElem.style.height = '0';
+            }, 1);
+            window.setTimeout(function () {
+              eventElem.classList.toggle('is-hidden', true);
+            }, eventCategoryAnimationDelay);
+          } else {
+            if (!isVisible) {
+              eventElem.classList.toggle('is-hidden', eventItem.isHidden);
+              return;
+            }
+
+            window.setTimeout(function () {
+              var height = getHeightOfHiddenElement(eventElem); // Get the natural height
+              eventElem.classList.toggle('is-hidden', false); // Make the element visible
+              eventElem.style.height = height; // Update the max-height
+            }, 1);
+
+            // Once the transition is complete, remove the inline max-height so the content can scale responsively
+            window.setTimeout(function () {
+              eventElem.style.height = '';
+              eventElem.classList.toggle('is-hidden', false);
+            }, eventCategoryAnimationDelay);
+          }
+        });
+        domEvent.stopPropagation();
+      };
+
+      /* -------------------------------------------------------------------------------------- */
+
+      const mountApplication = () => {
+        createSampleData();
+
+        const app = document.getElementById('app');
+
+        events.forEach((event, index) => {
+          const eventContainer = document.createElement('div');
+          const mainCategory = event.category
+            ? `<button onClick="toggleEventCategory(['${event.category}'], '${event.id}', event)">${event.category}</button>`
+            : '';
+          const subCategory1 = event.subCategory1
+            ? `<button onClick="toggleEventCategory(['${event.category}', '${event.subCategory1}'], '${event.id}', event)">${event.subCategory1}</button>`
+            : '';
+          const subCategory2 = event.subCategory2
+            ? `<button onClick="toggleEventCategory(['${event.category}', '${event.subCategory1}', '${event.subCategory2}'], '${event.id}', event)">${event.subCategory2}</button>`
+            : '';
+          const subCategory3 = event.subCategory3
+            ? `<button onClick="toggleEventCategory(['${event.category}', '${event.subCategory1}', '${event.subCategory2}', '${event.subCategory3}'], '${event.id}', event)">${event.subCategory3}</button>`
+            : '';
+          const eventHtml = `
+            <div class="event ${event.className}" id="${event.id}" onClick="clickEvent('${event.id}', event)">
+            <span><b>${event.title}</b></span><br>
+            <span>${event.subCategory1}</span><br>
+            <span>${event.date}</span><br><br>
+            ${mainCategory}
+            ${subCategory1}
+            ${subCategory2}
+            ${subCategory3}
+            <div class="event-details" id="event-details-${event.id}"><pre>${event.details}</pre></div>
+            `;
+          eventContainer.innerHTML = eventHtml;
+          app.appendChild(eventContainer);
+        });
+      };
+
+      /* -------------------------------------------------------------------------------------- */
+
+      const debug = true;
+
+      window.onload = () => {
+        mountApplication();
+      };
+    </script>
+  </body>
 </html>

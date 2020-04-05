@@ -1,8 +1,74 @@
 body {
-  background: yellowgreen;
-  margin: 10px;
+  background: white;
+  margin: 0px;
+  box-sizing: border-box;
 }
 
 .header {
   color: blue;
+}
+
+.event {
+  box-sizing: border-box;
+  display: block;
+  height: auto;
+  width: 360px;
+  min-width: 360px;
+  max-width: 360px;
+  border: 1px solid black;
+  padding: 9px;
+  transition: height 350ms ease-in-out;
+  display: block;
+  height: auto;
+}
+
+.event.is-selected {
+  border: 5px solid black;
+  padding: 5px;
+  height: 100%;
+}
+
+.event.is-hidden {
+  display: none;
+  height: 0;
+  overflow: hidden;
+  transition: height 350ms ease-in-out;
+}
+
+.event.is-filtered-hiddenxxxxxxxxxxxxxxxxxx {
+  display: none;
+  height: 0;
+  overflow: hidden;
+  transition: height 450ms linear;
+}
+.event.is-filtered-out {
+  background-color: gray;
+}
+
+.event-details {
+  display: none;
+  height: 0;
+  overflow: hidden;
+  transition: height 350ms ease-in-out;
+}
+
+.event-details.is-visible {
+  display: block;
+  height: auto;
+}
+
+.sport {
+  background-color: lightblue;
+}
+
+.musik {
+  background-color: greenyellow;
+}
+
+.barn {
+  background-color: whitesmoke;
+}
+
+.museum {
+  background-color: burlywood;
 }
