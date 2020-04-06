@@ -10,9 +10,59 @@
   </head>
 
   <body>
-    <script></script>
-    <div id="app">
-      <!-- Application will be mounted here -->
+    <div class="screen-container">
+      <div class="page-container">
+        <header class="top-nav">
+          <nav class="menu">
+            <a class="inner-page" href="javascript:void(0);" onclick="myFunction()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="white" width="24" height="24" viewbox="0 0 24 24">
+                <path d="M24 6h-24v-4h24v4zm0 4h-24v4h24v-4zm0 8h-24v4h24v-4z" />
+              </svg>
+            </a>
+          </nav>
+          <nav class="search-box">
+            <input type="text" name="query" placeholder="Sök stad, ort eller plats" />
+          </nav>
+          <nav class="filter">
+            <a class="inner-page" href="javascript:void(0);" onclick="myFunction()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="white" width="24" height="24" viewbox="0 0 24 24">
+                <path
+                  d="M6 18h-2v5h-2v-5h-2v-3h6v3zm-2-17h-2v12h2v-12zm11 7h-6v3h2v12h2v-12h2v-3zm-2-7h-2v5h2v-5zm11 14h-6v3h2v5h2v-5h2v-3zm-2-14h-2v12h2v-12z"
+                />
+              </svg>
+            </a>
+          </nav>
+        </header>
+
+        <header class="search-result inner-page">
+          <div class="search-result-query">
+            Uppsala, Uppsala kommun
+          </div>
+          <div class="search-result-no-hits hidden">
+            Ingen stad, plats, eller arrangör med detta namn finns. Prova en ny sökning.
+          </div>
+          <div class="search-result-many-hits hidden">
+            Det finns fler än en träff med detta namn. Välj vilken du vill visa.
+            <ul>
+              <li>Uppsala, Uppsala kommun</li>
+              <li>Uppsala, Gräddö kommun</li>
+            </ul>
+          </div>
+          <div class="search-result-one-hit">
+            <div class="search-result-distance">
+              <input type="range" min="1" max="100" value="10" class="distance-slider page-width" id="distance_range" />
+            </div>
+            <div>
+              Visar 1294 evenemang inom <span id="distance_value">100</span>
+              km
+            </div>
+          </div>
+        </header>
+
+        <div id="app">
+          <!-- Application will be mounted here -->
+        </div>
+      </div>
     </div>
 
     <script>
@@ -66,21 +116,22 @@
         const sampleEventDetails =
           'x\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nxx\nx\n\nx\nabc';
         const sampleDates = [
-          '2020-01-01',
-          '2020-01-02',
-          '2020-01-03',
-          '2020-01-04',
-          '2020-01-05',
-          '2020-01-06',
-          '2020-01-07',
+          '2020-03-01 00:00:00:000',
+          '2020-03-02 00:00:00:000',
+          '2020-03-03 00:00:00:000',
+          '2020-03-04 00:00:00:000',
+          '2020-03-05 00:00:00:000',
+          '2020-03-06 00:00:00:000',
+          '2020-03-07 00:00:00:000',
         ];
 
         const numOfEvents = 50;
         const tempEvents = [];
 
         for (let i = 0; i < numOfEvents; i += 1) {
+          const sampleDate = new Date(randomElementFromArray(sampleDates));
           const id = i + 1;
-          const date = randomElementFromArray(sampleDates);
+          const date = sampleDate;
           const category = randomElementFromArray(sampleCategories);
           const subCategory1 = randomSubCategory(category, sampleSubCategories1);
           const subCategory2 = randomSubCategory(subCategory1, sampleSubCategories2);
@@ -116,8 +167,8 @@
 
       /* -------------------------------------------------------------------------------------- */
 
-      const selectEvent = (event, isSwitchFromPreviousSelection = false) => {
-        console.log('selectEvent', event, isSwitchFromPreviousSelection);
+      const selectEvent = (event, isFirstSelection = false) => {
+        console.log('selectEvent', event, isFirstSelection);
 
         if (!event) {
           return;
@@ -125,18 +176,56 @@
         event.isSelected = true;
         currentSelectedEvent = event;
 
-        const eventElem = document.getElementById(event.id);
+        const eventElem = document.getElementById('event-' + event.id);
         eventElem.classList.toggle('is-selected', true);
         const eventDetailsElem = document.getElementById('event-details-' + event.id);
-        animateEventSelection(eventElem, eventDetailsElem, isSwitchFromPreviousSelection);
+
+        // const doAnimate = true;
+        if (typeof doAnimate !== 'undefined') {
+          // animateEventSelection(eventElem, eventDetailsElem, isFirstSelection);
+        } else {
+          // const scrollBehavior = isFirstSelection ? 'auto' : 'smooth';
+          eventDetailsElem.classList.toggle('is-visible', true); // Make the element visible
+          const topOfElement = eventElem.offsetTop - 53;
+          window.scroll({ top: topOfElement, behavior: 'smooth' });
+
+          /* const scrollBehavior = isFirstSelection ? 'smooth' : 'smooth';
+          window.setTimeout(function () {
+            eventElem.scrollIntoView({ behavior: scrollBehavior });
+            console.log('scrollIntoView:', scrollBehavior);
+            var height = getHeightOfHiddenElement(eventDetailsElem); // Get the natural height
+            eventDetailsElem.classList.toggle('is-visible', true); // Make the element visible
+            eventDetailsElem.style.height = height; // Update the max-height
+          }, 1);
+
+          window.setTimeout(function () {
+            eventDetailsElem.style.height = '';
+            eventElem.scrollIntoView({ behavior: scrollBehavior });
+            console.log('scrollIntoView:', scrollBehavior);
+            window.scrollBy(0, -53);
+          }, 350); */
+
+          // eventDetailsElem.style.height = height; // Update the max-height
+
+          /*           eventDetailsElem.classList.toggle('is-visible', true); // Make the element visible
+          const scrollBehavior = isFirstSelection ? 'auto' : 'smooth';
+          eventElem.scrollIntoView({ behavior: scrollBehavior });
+          window.scrollBy(0, -53); */
+        }
+
+        // todo: only hide the date header closest above selected event!
+        /*         const eventDateHeaderElems = document.getElementsByClassName('event-date-header');
+        for (let item of eventDateHeaderElems) {
+          item.classList.toggle('hidden', true);
+        } */
       };
 
       /* -------------------------------------------------------------------------------------- */
 
-      const animateEventSelection = (eventElem, eventDetailsElem, isSwitchFromPreviousSelection) => {
+      const animateEventSelection = (eventElem, eventDetailsElem, isFirstSelection) => {
         // When switching from one selected event to another, the hiding of the first event has been animated.
         // A smoother scrollIntoView of the newly selected event does not look good. A faster scroll (auto) looks better.
-        const scrollBehavior = isSwitchFromPreviousSelection ? 'auto' : 'smooth';
+        const scrollBehavior = isFirstSelection ? 'auto' : 'smooth';
         console.log('scrollIntoView behavior:', scrollBehavior);
 
         window.setTimeout(function () {
@@ -150,6 +239,7 @@
         window.setTimeout(function () {
           eventDetailsElem.style.height = '';
           eventElem.scrollIntoView({ behavior: scrollBehavior });
+          window.scrollBy(0, -53);
         }, eventAnimationDelay);
       };
 
@@ -164,10 +254,17 @@
         event.isSelected = false;
         currentSelectedEvent = null;
 
-        const eventElem = document.getElementById(event.id);
+        const eventElem = document.getElementById('event-' + event.id);
         const eventDetailsElem = document.getElementById('event-details-' + event.id);
 
-        animateEventDeselection(eventElem, eventDetailsElem);
+        if (typeof doAnimate !== 'undefined') {
+          animateEventDeselection(eventElem, eventDetailsElem);
+        } else {
+          eventDetailsElem.classList.toggle('is-visible', false);
+          eventElem.classList.toggle('is-selected', false);
+          // todo: reset href to something valid!
+          // window.location.href = 'http://localhost:8080/prototype.html';
+        }
       };
 
       /* -------------------------------------------------------------------------------------- */
@@ -263,7 +360,8 @@
             return;
           }
 
-          const eventElem = document.getElementById(eventItem.id);
+          const eventContainerElem = document.getElementById('event-container-' + eventItem.id);
+          const eventElem = document.getElementById('event-' + eventItem.id);
           eventItem.isFilteredOut = doFilterOut;
           eventElem.classList.toggle('is-filtered-out', doFilterOut);
 
@@ -288,7 +386,9 @@
 
           if (eventItem.isHidden) {
             if (!isVisible) {
+              // Do not animate not visible elements!
               eventElem.classList.toggle('is-hidden', eventItem.isHidden);
+              eventContainerElem.classList.toggle('is-hidden', eventItem.isHidden);
               return;
             }
 
@@ -300,24 +400,29 @@
               eventElem.style.height = '0';
             }, 1);
             window.setTimeout(function () {
-              eventElem.classList.toggle('is-hidden', true);
+              eventElem.classList.toggle('is-hidden', eventItem.isHidden);
+              eventContainerElem.classList.toggle('is-hidden', eventItem.isHidden);
             }, eventCategoryAnimationDelay);
           } else {
             if (!isVisible) {
+              // Do not animate not visible elements!
               eventElem.classList.toggle('is-hidden', eventItem.isHidden);
+              eventContainerElem.classList.toggle('is-hidden', eventItem.isHidden);
               return;
             }
 
             window.setTimeout(function () {
               var height = getHeightOfHiddenElement(eventElem); // Get the natural height
-              eventElem.classList.toggle('is-hidden', false); // Make the element visible
+              eventElem.classList.toggle('is-hidden', eventItem.isHidden); // Make the element visible
+              eventContainerElem.classList.toggle('is-hidden', eventItem.isHidden);
               eventElem.style.height = height; // Update the max-height
             }, 1);
 
             // Once the transition is complete, remove the inline max-height so the content can scale responsively
             window.setTimeout(function () {
               eventElem.style.height = '';
-              eventElem.classList.toggle('is-hidden', false);
+              eventElem.classList.toggle('is-hidden', eventItem.isHidden);
+              eventContainerElem.classList.toggle('is-hidden', eventItem.isHidden);
             }, eventCategoryAnimationDelay);
           }
         });
@@ -326,12 +431,31 @@
 
       /* -------------------------------------------------------------------------------------- */
 
+      const createEventDateHeaderText = (date) => {
+        const options = { weekday: 'long', day: 'numeric', month: 'long' };
+        const dateText = date.toLocaleDateString('sv-SE', options);
+        return dateText;
+      };
+
+      const createEventDateText = (date) => {
+        const options = { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' };
+        const dateText = date.toLocaleDateString('sv-SE', options);
+        return dateText;
+      };
+
       const mountApplication = () => {
         createSampleData();
 
         const app = document.getElementById('app');
 
+        const datesSeen = {};
+
         events.forEach((event, index) => {
+          const dateHeaderText = createEventDateHeaderText(event.date);
+          const dateText = createEventDateText(event.date);
+          const showDateHeader = datesSeen[dateHeaderText] ? false : true;
+          const dateHeaderClass = showDateHeader ? 'event-date-header' : 'event-date-header hidden';
+          datesSeen[dateHeaderText] = true;
           const eventContainer = document.createElement('div');
           const mainCategory = event.category
             ? `<button onClick="toggleEventCategory(['${event.category}'], '${event.id}', event)">${event.category}</button>`
@@ -345,25 +469,60 @@
           const subCategory3 = event.subCategory3
             ? `<button onClick="toggleEventCategory(['${event.category}', '${event.subCategory1}', '${event.subCategory2}', '${event.subCategory3}'], '${event.id}', event)">${event.subCategory3}</button>`
             : '';
+
+          const dateHeaderHtml = showDateHeader
+            ? `<div class="${dateHeaderClass} capitalized" id="event-date-header-${event.id}">${dateHeaderText}</div>`
+            : '';
+          const repeatedHtml = `<div class="repeated-event" onClick="hideRepeatedEvent('${event.id}', event)"><span class="repeated-event-text">Återkommande (134 tillfällen) (Dölj...)</span><!-- <span class="hide-repeated-event">Dölj</span>--></div>`;
+
+          // ${repeatedHtml}
+
           const eventHtml = `
-            <div class="event ${event.className}" id="${event.id}" onClick="clickEvent('${event.id}', event)">
-            <span><b>${event.title}</b></span><br>
-            <span>${event.subCategory1}</span><br>
-            <span>${event.date}</span><br><br>
-            ${mainCategory}
-            ${subCategory1}
-            ${subCategory2}
-            ${subCategory3}
-            <div class="event-details" id="event-details-${event.id}"><pre>${event.details}</pre></div>
+            ${dateHeaderHtml}
+
+            <div class="event-container" id="event-${event.id}" onClick="clickEvent('${event.id}', event)">
+              
+              <div class="event-layout-wrapper">
+
+                <div class="event-layout-picture">
+                  <img src="https://www.siriusfotboll.se/content/uploads/2015/03/iksirius_logo.png">
+                </div>
+
+                <div class="event-layout-summary">
+                  <div class="event-summary-title-row">
+                    <span class="event-summary-title">${event.title}</span>
+                    <span class="event-summary-distance">2.1 km</span>
+                  </div>
+                  <div class="event-summary-date">${dateText}</div>
+                  <div class="event-summary-location">Studenternas, Uppsala...</div>
+                </div>
+
+                <div class="event-layout-details" id="event-details-${event.id}">
+                  <pre>${event.details}</pre>
+                </div>
+
+                <div class="event-layout-footer">
+                  <section class="event-tags">
+                  ${mainCategory}
+                  ${subCategory1}
+                  ${subCategory2}
+                  ${subCategory3}
+                  </section>
+                </div>
+
+              </div>
+
+            </div>
             `;
           eventContainer.innerHTML = eventHtml;
-          app.appendChild(eventContainer);
+          // app.appendChild(eventContainer);
+          app.innerHTML += eventHtml;
         });
       };
 
       /* -------------------------------------------------------------------------------------- */
 
-      const debug = true;
+      const debug = false;
 
       window.onload = () => {
         mountApplication();

@@ -1,4 +1,4 @@
-# VS Code Template Project
+# Local Events
 
 ## Explanations
 

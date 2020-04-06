@@ -1,55 +1,305 @@
-body {
-  background: white;
-  margin: 0px;
+/* 
+  CSS properties order:
+
+  1. Layout Properties (position, float, clear, display)
+  2. Box Model Properties (width, height, margin, padding)
+  3. Visual Properties (color, background, border, box-shadow)
+  4. Typography Properties (font-size, font-family, text-align, text-transform)
+  5. Misc Properties (cursor, overflow, z-index)
+*/
+
+/* Fonts */
+
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap');
+
+/* General */
+
+* {
   box-sizing: border-box;
 }
 
-.header {
-  color: blue;
+.hidden {
+  display: none;
 }
 
-.event {
+.capitalized {
+  text-transform: capitalize;
+}
+
+body {
+  /* background: white;
+  margin: 0px; */
+  color: black;
+  background-color: #fefefe;
+  border: 0px solid black;
+  font-family: 'Open Sans', Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 1.15;
+}
+
+/* Page */
+
+.screen-container {
+  max-width: 100%;
+  margin: auto;
+  /* border: 1px solid black; */
+}
+
+.page-container {
+  display: relative;
+  width: 100%;
+  max-width: 700px;
+  padding: 0;
+  margin: 0;
+  margin: auto;
+  /* border: 1px solid black; */
+}
+
+.inner-page {
+  padding: 10px;
+}
+
+/* Navigation */
+
+.top-nav {
+  position: sticky;
+  top: 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  background-color: black;
+}
+
+.top-nav a {
+  display: block;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  /* padding: 10px; */
+}
+
+.top-nav a:hover {
+  color: black;
+  background-color: lightgreen;
+}
+
+.top-nav .search-box {
+  flex-grow: 1;
+  padding: 0 10px;
+}
+
+.top-nav .search-box input {
+  width: 100%;
+  height: 32px;
+}
+
+/* Search result > Header */
+
+.search-result header {
+  font-weight: normal;
+  margin-bottom: 10px;
+}
+
+.search-result-query {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.search-result-no-hits,
+.search-result-many-hits,
+.search-result-one-hit {
+  font-weight: normal;
+  font-size: 14px;
+}
+
+.search-result-distance {
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.search-result-distance input {
+  width: 100%;
+}
+
+.distance-slider {
+  display: inline;
+  /*   width: 100%;
+ */
+}
+
+/* Search result content */
+
+.event-date-header {
+  /*   position: sticky;
+  top: 0px; */
+  margin: 20px 0;
+  padding: 9px 9px 9px 9px;
+  color: white;
+  background-color: black;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.event-container {
+  margin: 20px 0;
+  border: 1px solid black; /*  lightgrey; */
+  padding: 0;
+  background-color: whitesmoke;
+  /*  transition: height 350ms ease-in-out;*/
+  display: block;
+  height: auto;
+}
+
+.event-container.is-hidden {
+  display: none;
+  overflow: hidden;
+  height: 0;
+  /*   transition: height 350ms ease-in-out;
+ */
+}
+
+.event-layout-wrapper {
+  display: grid;
+  grid-gap: 5px;
+  grid-template-columns: 70px auto;
+  grid-template-areas: 'event-layout-picture event-layout-summary' 'event-layout-details event-layout-details' 'event-layout-footer event-layout-footer';
+  max-width: 600px;
+  /* border: 1px solid black; */
+  font-size: 14px;
+  padding: 6px;
+}
+
+.event-layout-picture {
+  display: table-cell;
+  grid-area: event-layout-picture;
+  width: 70px;
+  height: 70px;
+  padding: 5px 0 5px 0;
+  border: 1px solid lightgray;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.event.hilite .event-layout-wrapper .event-layout-picture {
+  border: 1px solid darkgray;
+}
+
+.event-layout-picture img {
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+  margin: 0 auto;
+}
+
+.event-layout-summary {
+  grid-area: event-layout-summary;
+  margin-left: 3px;
+}
+
+.event-summary-title-row {
+  font-weight: bold;
+}
+
+.event-summary-title {
+  font-weight: normal;
+}
+
+.event-summary-distance {
+  float: right;
+}
+
+.event-summary-date {
+  font-weight: normal;
+}
+
+.event-summary-location {
+  font-weight: normal;
+}
+
+.event-layout-details {
+  grid-area: event-layout-details;
+  display: none;
+}
+
+.event-layout-details.is-visible {
+  display: block;
+}
+
+.event-details {
+  font-weight: normal;
+}
+
+.event-layout-footer {
+  grid-area: event-layout-footer;
+}
+
+.eventxxxxxxxxxxxxxxxxxxxxxxxxxxx {
   box-sizing: border-box;
   display: block;
   height: auto;
-  width: 360px;
+  /* width: 360px;
   min-width: 360px;
-  max-width: 360px;
-  border: 1px solid black;
+  max-width: 360px; */
   padding: 9px;
   transition: height 350ms ease-in-out;
   display: block;
   height: auto;
 }
 
+.eventxxxxxxxxxx span {
+  line-height: 1.5;
+}
+
+div.repeated-event {
+  margin-bottom: 6px;
+}
+
+.repeated-event-text {
+  padding: 3px 0px;
+  background-color: #f3faaf;
+  font-size: 14px;
+  color: #8a8a88;
+  font-family: monospace;
+}
+
+.hide-repeated-event {
+  padding: 0px 10px;
+  margin-left: 5px;
+  background-color: #e3e3e1;
+  font-weight: 500;
+  font-size: 14px;
+  color: #454543;
+  font-family: monospace;
+  text-transform: uppercase;
+}
+
 .event.is-selected {
-  border: 5px solid black;
-  padding: 5px;
+  /*   border: 5px solid black;
+  padding: 5px; */
   height: 100%;
+  border: 2px solid black;
+  padding: 7px;
 }
 
 .event.is-hidden {
   display: none;
   height: 0;
   overflow: hidden;
-  transition: height 350ms ease-in-out;
+  /* transition: height 350ms ease-in-out; */
 }
 
-.event.is-filtered-hiddenxxxxxxxxxxxxxxxxxx {
-  display: none;
-  height: 0;
-  overflow: hidden;
-  transition: height 450ms linear;
-}
 .event.is-filtered-out {
-  background-color: gray;
+  color: darkgray;
+  background-color: #e4e6eb;
 }
 
 .event-details {
   display: none;
   height: 0;
   overflow: hidden;
-  transition: height 350ms ease-in-out;
+  /* transition: height 350ms ease-in-out; */
 }
 
 .event-details.is-visible {
@@ -57,18 +307,26 @@ body {
   height: auto;
 }
 
-.sport {
-  background-color: lightblue;
+.promoted {
+  color: red;
+  font-weight: 600;
 }
 
-.musik {
-  background-color: greenyellow;
+/* Search result > Content > Event tags */
+
+.event-tag {
+  height: 28px;
+  font-size: 13px;
+  font-family: monospace;
 }
 
-.barn {
-  background-color: whitesmoke;
+.event-tag.on {
+  color: black;
 }
 
-.museum {
-  background-color: burlywood;
+.event-tag.off {
+  border: 1px solid #999999;
+  color: #999999;
+  background-color: white;
+  text-decoration: line-through;
 }
