@@ -12,10 +12,9 @@ const webpackOptions = merge(common, {
   plugins: [],
   output: {
     path: path.resolve(__dirname, '../dist'),
-    filename: '[name].[hash].js', // production!
+    filename: '[name].js', // production!
   },
   optimization: {
-    moduleIds: 'hashed',
     runtimeChunk: 'single',
     splitChunks: {
       chunks: 'all',

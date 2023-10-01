@@ -62,7 +62,6 @@ function mountApplication() {
   appElement.appendChild(section4);
   appElement.appendChild(section5);
 
-  // document.body.appendChild(appElement);
   document.getElementById('app').appendChild(appElement);
 }
 
